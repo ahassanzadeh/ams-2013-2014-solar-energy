@@ -31,9 +31,9 @@ def train_and_predict(train_data_file, test_data_file, target_col, test_pred_fil
     del train_x[target_col]
 
     x_cols = train_x.columns
-    feat_importance_fun = lambda (fitted_model): fitted_model.feature_importances_
-    staged_predict = lambda (fitted_model, pred_x): [fitted_model.predict(pred_x)]
-    predict = lambda (fitted_model, pred_x): fitted_model.predict(pred_x)
+    feat_importance_fun = lambda fitted_model: fitted_model.feature_importances_
+    staged_predict = lambda fitted_model, pred_x: [fitted_model.predict(pred_x)]
+    predict = lambda fitted_model, pred_x: fitted_model.predict(pred_x)
 
     model = None
     if model_type == "RandomForestRegressor":
@@ -43,7 +43,7 @@ def train_and_predict(train_data_file, test_data_file, target_col, test_pred_fil
     elif model_type == "GradientBoostingRegressor":
         model = GradientBoostingRegressor(**fit_args)
         model.fit(X=train_x, y=train_y)
-        staged_predict = lambda (fitted_model, pred_x): fitted_model.staged_predict(pred_x)
+        staged_predict = lambda fitted_model, pred_x: fitted_model.staged_predict(pred_x)
 
     save_model(model=model, model_file=model_file)
 
@@ -82,7 +82,7 @@ def train_and_predict(train_data_file, test_data_file, target_col, test_pred_fil
     test_pred.to_csv(test_pred_file, index=False)
     stop = timeit.default_timer()
     if not silent:
-        print "Time: %d s" % (stop - start)
+        print ("Time: %d s" % (stop - start))
 
 
 def print_stages(test_y, stage_predictions, test_metric):
